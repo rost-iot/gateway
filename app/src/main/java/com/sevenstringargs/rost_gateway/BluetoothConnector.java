@@ -84,12 +84,6 @@ public class BluetoothConnector extends BluetoothGattCallback {
             if (!connected.containsKey(device.getDevice().getAddress())){
                 connected.put(device.getDevice().getAddress(), device);
                 device.discoverServices();
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        doCommand("00:15:83:00:54:F9", "off");
-                    }
-                }, 5000);
             }
 
         } else if (BluetoothGatt.STATE_DISCONNECTED == newState) {

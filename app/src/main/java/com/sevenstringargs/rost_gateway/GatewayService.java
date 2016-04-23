@@ -15,9 +15,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import java.util.HashMap;
 
 public class GatewayService extends Service {
-    public static final String SERVICE_ID = "0000ffe0-0000-1000-8000-00805f9b34fb";
-    public static final String CHAR_ID = "0000ffe1-0000-1000-8000-00805f9b34fb";
-
     private String orgId = "8hlv7w";
     private String broker = "tcp://" + orgId + ".messaging.internetofthings.ibmcloud.com:1883";
     private String deviceType = "Rost-gateway";
@@ -92,6 +89,9 @@ public class GatewayService extends Service {
             Log.i("ssa", e.getReasonCode() + "");
             Log.i("ssa", e.getLocalizedMessage());
             e.printStackTrace();
+        } catch(Exception e){
+            e.printStackTrace();
+            return;
         }
 
         client.setCallback(new MqttCallback() {

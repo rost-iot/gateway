@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         int id = manager.addNetwork(wc);
         manager.enableNetwork(id, true);
 */
+
         startService(new Intent(this, GatewayService.class));
 
     }
