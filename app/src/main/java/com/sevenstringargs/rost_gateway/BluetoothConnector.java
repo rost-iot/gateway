@@ -49,15 +49,15 @@ public class BluetoothConnector extends BluetoothGattCallback {
                 return;
             }
 
-            String translatedCommand = CommandStore.getTo(cmd);
-            if (translatedCommand == null){
-                Log.i("ssa", String.format("No command translation for command %s", cmd));
-                return;
-            }
-
             String name = DeviceStore.getName(address);
             if (name == null){
                 Log.i("ssa", String.format("No name translation for address %s", address));
+                return;
+            }
+
+            String translatedCommand = CommandStore.getTo(name + "-" + cmd);
+            if (translatedCommand == null){
+                Log.i("ssa", String.format("No command translation for command %s", cmd));
                 return;
             }
 

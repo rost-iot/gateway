@@ -3,42 +3,22 @@ package com.sevenstringargs.rost_gateway;
 import java.util.HashMap;
 
 public class CommandStore {
-    private static HashMap<String, String> fromCommand = new HashMap<>();
-    private static HashMap<String, String> toCommand = new HashMap<>();
+    private static HashMap<String, String> commands = new HashMap<>();
 
     public synchronized static void clearPair(){
-        clearFromCommand();
-        clearToCommand();
+        clearCommands();
     }
 
-    public synchronized static void clearFromCommand(){
-        toCommand.clear();
-    }
-
-    public synchronized static void clearToCommand(){
-        fromCommand.clear();
+    public synchronized static void clearCommands(){
+        commands.clear();
     }
 
     public synchronized static void addPair(String from, String to){
-        if (!fromCommand.containsKey(from) && !toCommand.containsKey(to) && !from.equals(to)){
-            fromCommand.put(from, to);
-            toCommand.put(to, from);
-        }
+            commands.put(from, to);
     }
 
     public synchronized static String getTo(String from){
-        if (from == null){
-            return null;
-        }
-
-        return fromCommand.get(from);
+        return commands.get(from);
     }
 
-    public synchronized static String getFrom(String to){
-        if (to == null){
-            return null;
-        }
-
-        return toCommand.get(to);
-    }
 }
