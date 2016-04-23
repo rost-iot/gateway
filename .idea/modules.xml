@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Rost-Gateway.iml" filepath="$PROJECT_DIR$/Rost-Gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../BluetoothHelperApp/bluetoothhelper/bluetoothHelper.iml" filepath="$PROJECT_DIR$/../BluetoothHelperApp/bluetoothhelper/bluetoothHelper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../DbHelperApp/dbhandler/dbHandler.iml" filepath="$PROJECT_DIR$/../DbHelperApp/dbhandler/dbHandler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../MqttHelperApp/mqtthelper/mqttHelper.iml" filepath="$PROJECT_DIR$/../MqttHelperApp/mqtthelper/mqttHelper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../WifiHelperApp/wifihelper/wifiHelper.iml" filepath="$PROJECT_DIR$/../WifiHelperApp/wifihelper/wifiHelper.iml" />
+    </modules>
+  </component>
+</project>

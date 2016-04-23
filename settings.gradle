@@ -1,0 +1,8 @@
+include ':app'
+include ':bluetoothHelper'
+include ':dbHandler'
+include ':wifiHelper'
+include ':mqttHelper'
+project(':bluetoothHelper').projectDir = new File(settingsDir, '../BluetoothHelperApp/BluetoothHelper')
+project(':dbHandler').projectDir = new File(settingsDir, '../DbHelperApp/DbHandler')
+project(':mqttHelper').projectDir = new File(settingsDir, '../MqttHelperApp/MqttHelper')
