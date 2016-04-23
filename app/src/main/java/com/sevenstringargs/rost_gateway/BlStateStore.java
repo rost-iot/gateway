@@ -1,14 +1,14 @@
 package com.sevenstringargs.rost_gateway;
 
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class BlStateStore {
     private static HashMap<String, BluetoothGatt> connected = new HashMap<>();
-    private static Set<String> found = new TreeSet<>();
+    private static HashMap<String, BluetoothDevice> found = new HashMap<>();
 
     public synchronized static void clearConnected(){
         connected.clear();
@@ -31,16 +31,16 @@ public class BlStateStore {
         connected.put(address, device);
     }
 
-    public synchronized static void addFound(String address){
-        if (address == null){
+    public synchronized static void addFound(BluetoothDevice device){
+        if (device == null){
             return;
         }
 
-        if (found.contains(address)){
+        if (found.containsKey(device.getAddress())){
             return;
         }
 
-        found.add(address);
+        found.put(device.getAddress(), device);
     }
 
     public synchronized static void removeFound(String address){
@@ -48,7 +48,7 @@ public class BlStateStore {
             return;
         }
 
-        if (!found.contains(address)){
+        if (!found.containsKey(address)){
            return;
         }
 
@@ -72,5 +72,24 @@ public class BlStateStore {
             return;
         }
     }
+
+    public synchronized static BluetoothGatt getConnected(String address){
+        if (address == null){
+            return null;
+        }
+
+        return connected.get(address);
+    }
+
+    public synchronized static BluetoothDevice getFound(String address){
+        if (address == null){
+            return null;
+        }
+
+        return found.get(address);
+    }
+
+    public synchronized static Collection<BluetoothDevice> allFound(){
+        return found.values();
+    }
 }
-//00:15:83:00:54:A5

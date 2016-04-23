@@ -8,37 +8,21 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.util.Log;
-
 import com.sevenstringargs.bluetoothhelper.BluetoothHelper;
 import com.sevenstringargs.bluetoothhelper.OnEndCallback;
 
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
 public class BluetoothConnector extends BluetoothGattCallback {
-    public static final String SERVICE_ID = "0000ffe0-0000-1000-8000-00805f9b34fb";
-    public static final String CHAR_ID = "0000ffe1-0000-1000-8000-00805f9b34fb";
+    public static final UUID SERVICE_ID = UUID.fromString("0000ffe0-0000-1000-8000-00805f9b34fb");
+    public static final UUID CHAR_ID = UUID.fromString("0000ffe1-0000-1000-8000-00805f9b34fb");
     private final Context context;
-    private HashMap<String, String> cmdLookup;
-    private HashMap<String, BluetoothDevice> foundDevices;
-    private HashMap<String, BluetoothGatt> connected;
-    private HashMap<String, String> macLookup;
-    private HashMap<String, String> deviceLookup;
     private BluetoothAdapter.LeScanCallback callback;
-    public BluetoothConnector(Context context, HashMap<String, String> deviceLookup, HashMap<String, String> macLookup){
-        this.macLookup = macLookup;
-        cmdLookup = new HashMap<>();
-        cmdLookup.put("on", "a");
-        cmdLookup.put("off", "b");
-        cmdLookup.put("small", "a");
-        cmdLookup.put("medium", "b");
-        cmdLookup.put("large", "c");
+    public BluetoothConnector(Context context){
         this.context = context;
-        connected = new HashMap<>();
-        this.deviceLookup = deviceLookup;
-        foundDevices = new HashMap<>();
         BluetoothHelper.enable(context);
 
         createCallback();
@@ -48,32 +32,48 @@ public class BluetoothConnector extends BluetoothGattCallback {
     }
 
     public void doCommand(String address, String cmd){
-        if (connected.containsKey(address)){
-            BluetoothGatt gatt = connected.get(address);
-            BluetoothGattService service = gatt.getService(UUID.fromString(SERVICE_ID));
+        if (BlStateStore.getConnected(address) != null){
+            BluetoothGatt gatt = BlStateStore.getConnected(address);
+
+            BluetoothGattService service = gatt.getService(SERVICE_ID);
             if (service == null){
-                Log.i("ssa", "No Serivce!!!");
+                Log.i("ssa", "BLE Service not found, try again");
+                gatt.discoverServices();
                 return;
             }
 
-            BluetoothGattCharacteristic ch = service.getCharacteristic(UUID.fromString(CHAR_ID));
+            BluetoothGattCharacteristic ch = service.getCharacteristic(CHAR_ID);
+            if (ch == null){
+                Log.i("ssa", "BLE Characteristic not found, try again");
+                gatt.discoverServices();
+                return;
+            }
 
-            Log.i("ssa", "Command " + cmd);
-            Log.i("ssa", "Address " + address);
+            String translatedCommand = CommandStore.getTo(cmd);
+            if (translatedCommand == null){
+                Log.i("ssa", String.format("No command translation for command %s", cmd));
+                return;
+            }
 
-            String c = cmdLookup.get(cmd);
-            ch.setValue(c);
+            String name = DeviceStore.getName(address);
+            if (name == null){
+                Log.i("ssa", String.format("No name translation for address %s", address));
+                return;
+            }
+
+            Log.i("ssa", String.format("Performing command: %s(%s) on device: %s(%s)", cmd, translatedCommand, name, address));
+
+            ch.setValue(translatedCommand);
             gatt.writeCharacteristic(ch);
         }
     }
 
     private void createCallback(){
         callback = new BluetoothAdapter.LeScanCallback() {
+
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                if (!foundDevices.containsKey(device.getAddress())){
-                    foundDevices.put(device.getAddress(), device);
-                }
+                BlStateStore.addFound(device);
             }
         };
     }
@@ -81,23 +81,24 @@ public class BluetoothConnector extends BluetoothGattCallback {
     @Override
     public void onConnectionStateChange(BluetoothGatt device, int status, int newState){
         if (BluetoothGatt.GATT_SUCCESS == status && BluetoothGatt.STATE_CONNECTED == newState) {
-            if (!connected.containsKey(device.getDevice().getAddress())){
-                connected.put(device.getDevice().getAddress(), device);
+            if (BlStateStore.getConnected(device.getDevice().getAddress()) == null){
+                BlStateStore.addConnected(device);
                 device.discoverServices();
             }
-
         } else if (BluetoothGatt.STATE_DISCONNECTED == newState) {
-            connected.remove(device.getDevice().getAddress());
+            BlStateStore.removeConnected(device);
         }
     }
 
     private void connectToDevices(){
-        for (BluetoothDevice d : foundDevices.values()){
-            if (macLookup.containsKey(d.getAddress())){
+        Iterator<BluetoothDevice> iter = BlStateStore.allFound().iterator();
+        while(iter.hasNext()){
+            BluetoothDevice d = iter.next();
+            if (DeviceStore.getName(d.getAddress()) != null){
                 connectToBluetoothDevice(d);
             }
         }
-        connected.clear();
+
     }
 
     private void connectToBluetoothDevice(BluetoothDevice d){
@@ -113,10 +114,15 @@ public class BluetoothConnector extends BluetoothGattCallback {
                     @Override
                     public void done() {
                         Log.i("ssa", "Found");
-                        for (BluetoothDevice d : foundDevices.values()){
+
+                        Iterator<BluetoothDevice> iter = BlStateStore.allFound().iterator();
+                        while(iter.hasNext()){
+                            BluetoothDevice d = iter.next();
                             Log.i("ssa", d.getAddress() + " " + d.getName());
                             connectToDevices();
                         }
+
+                        BlStateStore.clearFound();
                     }
                 });
             }
