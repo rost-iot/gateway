@@ -35,6 +35,9 @@ public class GatewayService extends Service {
         CommandStore.addPair("small", "a");
         CommandStore.addPair("medium", "b");
         CommandStore.addPair("large", "c");
+        CommandStore.addPair("low", "a");
+        CommandStore.addPair("high", "b");
+        CommandStore.addPair("off", "c");
     }
 
     @Override
