@@ -16,7 +16,7 @@ public class MqttConnector {
     private MqttConfig config;
 
     public MqttConnector(Context context, BluetoothConnector bluetoothConnector) {
-        config = new MqttConfig();
+        config = new MqttConfig(context);
         this.bluetoothConnector = bluetoothConnector;
 
         if (!setup()){

@@ -1,5 +1,7 @@
 package com.sevenstringargs.rost_gateway;
 
+import android.content.Context;
+
 import java.util.HashMap;
 
 public class MqttConfig extends HashMap<String, String> {
@@ -12,14 +14,14 @@ public class MqttConfig extends HashMap<String, String> {
     public static final String USERNAME = "USERNAME";
     public static final String PASSWORD = "PASSWORD";
 
-    public MqttConfig(){
-        put(ORG_ID, "8hlv7w");
+    public MqttConfig(Context c){
+        put(ORG_ID, c.getString(R.string.orgId));
         put(BROKER_URL, String.format("tcp://%s.messaging.internetofthings.ibmcloud.com", get(ORG_ID)));
         put(FULL_BROKER_URL, String.format("%s:%s", get(BROKER_URL), "1883"));
         put(DEVICE_TYPE, "Rost-gateway");
         put(DEVICE_ID, "gateway2");
         put(CLIENT_ID, String.format("g:%s:%s:%s", get(ORG_ID), get(DEVICE_TYPE), get(DEVICE_ID)));
-        put(USERNAME, "use-token-auth");
-        put(PASSWORD, "xb+oz_zoNiof3?m*F_");
+        put(USERNAME, c.getString(R.string.username));
+        put(PASSWORD, c.getString(R.string.password));
     }
 }

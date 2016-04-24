@@ -1,6 +1,7 @@
 package com.sevenstringargs.rost_gateway;
 
 import android.content.Intent;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,9 +16,8 @@ public class MainActivity extends AppCompatActivity {
 
         WifiManager manager = (WifiManager) getSystemService(WIFI_SERVICE);
 
-/*
-        String ssid = "axel ibm";
-        String pass = "ibmibmibm";
+        String ssid = getString(R.string.wifiName);
+        String pass = getString(R.string.wifiPass);
         WifiConfiguration wc = new WifiConfiguration();
         wc.SSID = "\"" + ssid + "\"";
         wc.preSharedKey= "\"" + pass + "\"";
@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+/*
 */
         startService(new Intent(this, GatewayService.class));
     }

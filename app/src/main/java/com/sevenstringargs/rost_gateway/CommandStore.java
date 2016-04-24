@@ -5,10 +5,6 @@ import java.util.HashMap;
 public class CommandStore {
     private static HashMap<String, String> commands = new HashMap<>();
 
-    public synchronized static void clearPair(){
-        clearCommands();
-    }
-
     public synchronized static void clearCommands(){
         commands.clear();
     }
