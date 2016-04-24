@@ -26,7 +26,7 @@ public class GatewayService extends Service {
     private void setupDeviceStore(){
         DeviceStore.addPairs("00:15:83:00:54:A5", "fan");
         DeviceStore.addPairs("00:15:83:00:54:F9", "lamp");
-        DeviceStore.addPairs("00:15:83:00:00:DE", "tap");
+        DeviceStore.addPairs("00:15:83:00:54:DE", "tap");
     }
 
     private void setupCommandStore(){
@@ -35,6 +35,7 @@ public class GatewayService extends Service {
         CommandStore.addPair("tap-small", "a");
         CommandStore.addPair("tap-medium", "b");
         CommandStore.addPair("tap-large", "c");
+        CommandStore.addPair("tap-config", "d");
         CommandStore.addPair("fan-low", "a");
         CommandStore.addPair("fan-high", "b");
         CommandStore.addPair("fan-off", "c");
